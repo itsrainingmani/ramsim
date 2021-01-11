@@ -27,3 +27,23 @@
 
 (defn wire-nand-gate [state a b o]
   (update state :nand-gates conj {:ins [a b] :out o}))
+
+;; Model the NAND gate behavior
+(defn nand-output
+  [a b]
+  (if (= a b 1) 0 1))
+;; => #'ramsim.core/nand-output
+
+
+;; (nand-output 0 1)
+;; => 1
+
+;; (nand-output 1 1)
+;; => 0
+
+(defn dependent-nand-gates
+  "Function to find all the NAND gates connected to a specific wire"
+  [state wire]
+  (filter
+   (fn [{:keys [ins]}] (some #{wire} ins))
+   (:nand-gates state)))
