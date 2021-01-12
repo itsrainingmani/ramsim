@@ -69,3 +69,17 @@
 ;;     Find all the NAND gates that the wire was connected too
 ;;     Trigger those NAND gates if needed.
 
+(defn trigger-nand-gate
+  "Calculates the new charge of a NAND gate, and triggers the output"
+  [state {:keys [ins out]}]
+  (let [new-charge (apply nand-output (charges state ins))]
+    (trigger state out new-charge)))
+
+(defn trigger-many
+  "Helper function to trigger many wires"
+  [state wires charges]
+  (reduce
+   (fn [acc-state [wire charge]]
+     (trigger acc-state wire charge))
+   state
+   (map vector wires charges)))
