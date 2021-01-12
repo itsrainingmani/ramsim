@@ -49,3 +49,23 @@
    (:nand-gates state)))
 
 (dependent-nand-gates (wire-nand-gate empty-state :a :b :c) :a)
+; => ({:ins [:a :b], :out :c})
+
+(declare trigger-nand-gate)
+(defn trigger
+  ([state wire new-v]
+   (let [old-charge (charge state wire)
+         state' (set-charge state wire new-v)
+         new-charge (charge state' wire)]
+     (if (= old-charge new-charge)
+       state'
+       (reduce (fn [acc-state-out] (trigger-nand-gate acc-state-out))
+               state'
+               (dependent-nand-gates state' wire))))))
+
+;; This follows exactly the model we described:
+
+;;     Update the charge of the wire that was triggered
+;;     Find all the NAND gates that the wire was connected too
+;;     Trigger those NAND gates if needed.
+
