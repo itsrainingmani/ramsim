@@ -47,3 +47,5 @@
   (filter
    (fn [{:keys [ins]}] (some #{wire} ins))
    (:nand-gates state)))
+
+(dependent-nand-gates (wire-nand-gate empty-state :a :b :c) :a)
