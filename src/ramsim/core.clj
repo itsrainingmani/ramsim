@@ -83,3 +83,15 @@
      (trigger acc-state wire charge))
    state
    (map vector wires charges)))
+
+;; test simulate a simple charge flowing through a NAND Gate
+(deftest test-nand-gate
+         (let [s1 (-> empty-state
+                      (wire-nand-gate :a :b :o)
+                      (trigger-many [:a :b] [1 0]))
+               s2 (-> s1
+                      (trigger :b 1))]
+           (testing "just a is on"
+                    (is (= '(1 0 1) (charges s1 [:a :b :o]))))
+           (testing "both a and b are on"
+                    (is (= '(1 1 0) (charges s2 [:a :b :o]))))))
