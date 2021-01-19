@@ -8,7 +8,7 @@
 
 ;; Represent the state of the circuit
 (def ex-state-v0 {:charge-map {:a 1 :b 2 :c 0}
-                  :nand-gates [{:ins  [:a :b]
+                  :nand-gates [{:ins [:a :b]
                                 :out :c}]})
 
 ; update state v0
@@ -45,8 +45,8 @@
   "Function to find all the NAND gates connected to a specific wire"
   [state wire]
   (filter
-   (fn [{:keys [ins]}] (some #{wire} ins))
-   (:nand-gates state)))
+    (fn [{:keys [ins]}] (some #{wire} ins))
+    (:nand-gates state)))
 
 (dependent-nand-gates (wire-nand-gate empty-state :a :b :c) :a)
 ; => ({:ins [:a :b], :out :c})
@@ -79,19 +79,11 @@
   "Helper function to trigger many wires"
   [state wires charges]
   (reduce
-   (fn [acc-state [wire charge]]
-     (trigger acc-state wire charge))
-   state
-   (map vector wires charges)))
+    (fn [acc-state [wire charge]]
+      (trigger acc-state wire charge))
+    state
+    (map vector wires charges)))
 
-;; test simulate a simple charge flowing through a NAND Gate
-(deftest test-nand-gate
-         (let [s1 (-> empty-state
-                      (wire-nand-gate :a :b :o)
-                      (trigger-many [:a :b] [1 0]))
-               s2 (-> s1
-                      (trigger :b 1))]
-           (testing "just a is on"
-                    (is (= '(1 0 1) (charges s1 [:a :b :o]))))
-           (testing "both a and b are on"
-                    (is (= '(1 1 0) (charges s2 [:a :b :o]))))))
+(defn wire-not-gate
+  ([state a o]
+   (wire-nand-gate state a a o)))
