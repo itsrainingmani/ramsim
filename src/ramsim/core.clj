@@ -87,3 +87,13 @@
 (defn wire-not-gate
   ([state a o]
    (wire-nand-gate state a a o)))
+
+;; Simulate AND
+;; Plugging the output of a NAND Gate into a NOT Gate
+
+(defn wire-and-gate
+  [state a b o]
+  (let [nand-o :c]
+    (-> state
+        (wire-nand-gate a b nand-o)
+        (wire-not-gate nand-o o))))
