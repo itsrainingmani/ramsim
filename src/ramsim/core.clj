@@ -59,7 +59,7 @@
          new-charge (charge state' wire)]
      (if (= old-charge new-charge)
        state'
-       (reduce (fn [acc-state-out] (trigger-nand-gate acc-state-out))
+       (reduce (fn [acc-state out] (trigger-nand-gate acc-state out))
                state'
                (dependent-nand-gates state' wire))))))
 
