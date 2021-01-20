@@ -88,16 +88,6 @@
   ([state a o]
    (wire-nand-gate state a a o)))
 
-;; Simulate AND
-;; Plugging the output of a NAND Gate into a NOT Gate
-
-(defn wire-and-gate
-  [state a b o]
-  (let [nand-o :c] ;; intermediary wire c connects the NAND Gate and the NOT Gate
-    (-> state
-        (wire-nand-gate a b nand-o)
-        (wire-not-gate nand-o o))))
-
 ;; Helper functions to create unique wires
 (def _u (atom {}))
 (defn uniq-n [k]
@@ -119,3 +109,13 @@
 
 ;; [(wire :a) (wire :a)]
 ;; => [:a :a#2]
+
+;; Simulate AND
+;; Plugging the output of a NAND Gate into a NOT Gate
+
+(defn wire-and-gate
+  [state a b o]
+  (let [nand-o (wire (kw a b :and-nand-o))]
+    (-> state
+        (wire-nand-gate a b nand-o)
+        (wire-not-gate nand-o o))))
