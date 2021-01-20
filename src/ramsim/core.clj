@@ -93,7 +93,29 @@
 
 (defn wire-and-gate
   [state a b o]
-  (let [nand-o :c]
+  (let [nand-o :c] ;; intermediary wire c connects the NAND Gate and the NOT Gate
     (-> state
         (wire-nand-gate a b nand-o)
         (wire-not-gate nand-o o))))
+
+;; Helper functions to create unique wires
+(def _u (atom {}))
+(defn uniq-n [k]
+  (swap! _u update k (fn [i] (inc (or i 0))))
+  (get @_u k))
+
+(defn kw [& args]
+  (->> args
+       (map #(if ((some-fn keyword? symbol?) %1)
+               (name %1)
+               %1))
+       (apply str)
+       keyword))
+
+(defn wire
+  ([n]
+   (let [i (uniq-n n)]
+     (if (> i 1) (kw n "#" i) n))))
+
+;; [(wire :a) (wire :a)]
+;; => [:a :a#2]
